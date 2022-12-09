@@ -15,18 +15,18 @@ phases:
         - export KUBECONFIG=$HOME/.kube/config
   build:
     commands:
-      - docker build --tag 431591413306.dkr.ecr.sa-east-1.amazonaws.com/django:$TAG .
+      - docker build --tag eks-test:latest 431591413306.dkr.ecr.sa-east-1.amazonaws.com/eks-test:latest
 
   post_build:
     commands:
-      - docker push 431591413306.dkr.ecr.sa-east-1.amazonaws.com/django:$TAG
-      - CREDENTIALS=$(aws sts assume-role --role-arn $EKS_KUBECTL_ROLE_ARN --role-session-name codebuild-kubectl --duration-seconds 900)
+      - docker push eks-test:latest 431591413306.dkr.ecr.sa-east-1.amazonaws.com/eks-test:latest
+      - CREDENTIALS=$(aws sts assume-role --role-arn arn:aws:iam::431591413306:role/EksWorkshopCodeBuildKubectlRole --role-session-name codebuild-kubectl --duration-seconds 900)
       - export AWS_ACCESS_KEY_ID="$(echo ${CREDENTIALS} | jq -r '.Credentials.AccessKeyId')"
       - export AWS_SECRET_ACCESS_KEY="$(echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey')"
       - export AWS_SESSION_TOKEN="$(echo ${CREDENTIALS} | jq -r '.Credentials.SessionToken')"
       - export AWS_EXPIRATION=$(echo ${CREDENTIALS} | jq -r '.Credentials.Expiration')
       - aws eks update-kubeconfig --name teste-bsp
       - kubectl apply -f hello-k8s.yml
-      - printf '[{"name":"hello-k8s","imageUri":"%s"}]' 431591413306.dkr.ecr.sa-east-1.amazonaws.com/django:$TAG > build.json
+      - printf '[{"name":"hello-k8s","imageUri":"%s"}]' eks-test:latest 431591413306.dkr.ecr.sa-east-1.amazonaws.com/eks-test:latest > build.json
 artifacts:
   files: build.json
