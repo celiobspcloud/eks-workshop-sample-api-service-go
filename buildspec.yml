@@ -15,7 +15,7 @@ phases:
         - export KUBECONFIG=$HOME/.kube/config
   build:
     commands:
-      - docker build --tag eks-test:latest 431591413306.dkr.ecr.sa-east-1.amazonaws.com/eks-test:latest .
+      - docker build -t eks-test:latest 431591413306.dkr.ecr.sa-east-1.amazonaws.com/eks-test:latest .
 
   post_build:
     commands:
