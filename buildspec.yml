@@ -11,15 +11,15 @@ phases:
   pre_build:
       commands:
         - TAG="teste"
-        - $(aws ecr get-login --no-include-email)
+        - aws ecr get-login-password --region sa-east-1 | docker login --username AWS --password-stdin 431591413306.dkr.ecr.sa-east-1.amazonaws.com
         - export KUBECONFIG=$HOME/.kube/config
   build:
     commands:
-      - docker build -t eks-test:latest 431591413306.dkr.ecr.sa-east-1.amazonaws.com/eks-test:latest .
+      - docker build -t eks-test .
 
   post_build:
     commands:
-      - docker push eks-test:latest 431591413306.dkr.ecr.sa-east-1.amazonaws.com/eks-test:latest
+      - docker push 431591413306.dkr.ecr.sa-east-1.amazonaws.com/eks-test:latest
       - CREDENTIALS=$(aws sts assume-role --role-arn arn:aws:iam::431591413306:role/EksWorkshopCodeBuildKubectlRole --role-session-name codebuild-kubectl --duration-seconds 900)
       - export AWS_ACCESS_KEY_ID="$(echo ${CREDENTIALS} | jq -r '.Credentials.AccessKeyId')"
       - export AWS_SECRET_ACCESS_KEY="$(echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey')"
