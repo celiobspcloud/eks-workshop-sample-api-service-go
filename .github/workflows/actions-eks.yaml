@@ -40,7 +40,6 @@ jobs:
         sudo apt-get update && sudo apt-get -y install jq python3-pip python3-dev && pip3 install --upgrade awscli
         curl -sSL https://get.docker.com/ | sudo sh
         sudo usermod -aG docker $USER
-        bash
 
     - name: update kubeconfig
       run: |
@@ -50,6 +49,7 @@ jobs:
     - name: pre-build
       run: |
         TAG="teste"
+        bash
         aws ecr get-login-password --region sa-east-1 | docker login --username AWS --password-stdin 431591413306.dkr.ecr.sa-east-1.amazonaws.com
         export KUBECONFIG=$HOME/.kube/config
 
