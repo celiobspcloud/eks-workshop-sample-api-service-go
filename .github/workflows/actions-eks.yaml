@@ -39,11 +39,11 @@ jobs:
         export PATH=$PWD/:$PATH
         sudo apt-get update && sudo apt-get -y install jq python3-pip python3-dev && pip3 install --upgrade awscli
         curl -sSL https://get.docker.com/ | sudo sh
+        sudo usermod -aG docker $USER
 
     - name: update kubeconfig
       run: |
         aws eks update-kubeconfig --name=teste-bsp
-        echo $USER
         #./kubectl get nodes
 
     - name: pre-build
