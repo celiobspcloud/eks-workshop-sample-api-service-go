@@ -39,8 +39,9 @@ jobs:
         export PATH=$PWD/:$PATH
         sudo apt-get update && sudo apt-get -y install jq python3-pip python3-dev && pip3 install --upgrade awscli
 
-    - name: Teste CLI
+    - name: update kubeconfig
       run: |
-        aws s3 ls
+        aws eks update-kubeconfig --name=teste-bsp
+        kubectl get nodes
 
   
