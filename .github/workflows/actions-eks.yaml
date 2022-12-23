@@ -43,6 +43,7 @@ jobs:
     - name: update kubeconfig
       run: |
         aws eks update-kubeconfig --name=teste-bsp
+        echo $USER
         #./kubectl get nodes
 
     - name: pre-build
