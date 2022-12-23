@@ -42,6 +42,24 @@ jobs:
     - name: update kubeconfig
       run: |
         aws eks update-kubeconfig --name=teste-bsp
-        ./kubectl get nodes
+        #./kubectl get nodes
+
+    - name: pre-build
+      run: |
+        TAG="teste"
+        aws ecr get-login-password --region sa-east-1 | docker login --username AWS --password-stdin 431591413306.dkr.ecr.sa-east-1.amazonaws.com
+        export KUBECONFIG=$HOME/.kube/config
+
+    - name: build
+      run: |
+        TAG="teste"
+        docker build -t eks-test .
+        docker tag eks-test:latest 431591413306.dkr.ecr.sa-east-1.amazonaws.com/eks-test:latest
+
+    - name: build
+      run: |
+        docker push 431591413306.dkr.ecr.sa-east-1.amazonaws.com/eks-test:latest
+        kubectl apply -f hello-k8s.yml
+        printf '[{"name":"hello-k8s","imageUri":"%s"}]' eks-test:latest 431591413306.dkr.ecr.sa-east-1.amazonaws.com/eks-test:latest > build.json
 
   
