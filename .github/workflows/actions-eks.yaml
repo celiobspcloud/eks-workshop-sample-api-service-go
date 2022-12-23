@@ -52,15 +52,17 @@ jobs:
         aws ecr get-login-password --region sa-east-1 | sudo docker login --username AWS --password-stdin 431591413306.dkr.ecr.sa-east-1.amazonaws.com
         export KUBECONFIG=$HOME/.kube/config
 
+#exige sudo para o docker, diferente do git actions comum
+
     - name: build
       run: |
         TAG="teste"
         sudo docker build -t eks-test .
         sudo docker tag eks-test:latest 431591413306.dkr.ecr.sa-east-1.amazonaws.com/eks-test:latest
 
-    - name: build
+    - name: deploy eks
       run: |
-        docker push 431591413306.dkr.ecr.sa-east-1.amazonaws.com/eks-test:latest
+        sudo docker push 431591413306.dkr.ecr.sa-east-1.amazonaws.com/eks-test:latest
         kubectl apply -f hello-k8s.yml
         printf '[{"name":"hello-k8s","imageUri":"%s"}]' eks-test:latest 431591413306.dkr.ecr.sa-east-1.amazonaws.com/eks-test:latest > build.json
 
